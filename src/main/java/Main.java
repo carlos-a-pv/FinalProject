@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
         int [] users_id = {323341, 314777};
-        int [] users_names = {};
+        String [] users_names = {};
         int [] passwords = {};
         
         menu();
@@ -42,10 +42,7 @@ public class Main {
                 System.out.println("Programa finalizado.");
                 break;
         }
-        
-        
-        
-        
+   
         
     }
     public static void menu(){
