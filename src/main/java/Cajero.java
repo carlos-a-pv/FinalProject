@@ -16,7 +16,5 @@ public class Cajero {
         this.typeTickets = num;
     }
             
-    public static void toGetMoney(){}
-    public static void queryMoney(){}
-    public static void toPutMoney(){}
+   
 }

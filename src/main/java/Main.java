@@ -4,12 +4,13 @@
  * @author kevin.payanene
  * @author harold.quiceno
  */
+import java.util.Random;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        int [] users_id = {323341, 314777};
+        int [] users_id = {};
         String [] users_names = {};
         int [] passwords = {};
         
@@ -35,7 +36,7 @@ public class Main {
                 }
             
             case 2:
-                makeRegister();
+                makeRegister(users_id, passwords);
                 break;
 
             case 3:
@@ -70,9 +71,29 @@ public class Main {
         
         return bandera;
     }
-    public static void makeRegister(){
-          
-        System.out.println("");
-        System.out.println("");
+    public static void makeRegister(int [] users_id, int [] passwords){
+        Scanner teclado = new Scanner(System.in);
+        String name;
+        int userId, password;
+        boolean bandera = true;
+        int contador = 0;
+        
+        System.out.println("Bienvenido al registro de su cuenta bancaria: ");
+        System.out.println("Ingrese la cedula: ");
+        userId = teclado.nextInt();
+        System.out.println("Ingrese el nombre: ");
+        name = teclado.next();
+        System.out.println("Ingrese la contraseña: ");
+        password = teclado.nextInt();
+        
+        while(bandera){
+            if (users_id[contador] == 0){
+                users_id[contador ] = userId;
+                bandera = false;
+            }
+            passwords[contador] = password;
+        
+        }
+        
     }
 }
