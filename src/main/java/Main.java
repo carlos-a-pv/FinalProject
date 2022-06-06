@@ -31,9 +31,11 @@ public class Main {
         String new_user;
         String new_password;
         String new_name;
-
+        boolean bandera = true;
+        
+        while(bandera){
+        
         menu();
-
         System.out.println("\nIngrese una opción: ");
         int opcion = teclado.nextInt();
         int fila = 0;
@@ -85,18 +87,24 @@ public class Main {
                 new_name = teclado.next();
                 System.out.println("Cree una nueva contraseña para su cuenta: ");
                 new_password = teclado.next();
-
-                datos = makeRegister(new_user, new_name, new_password, datos);
-
-
+                if (new_password.length() != 4){
+                    System.out.println("La contraseña de la cuenta bancaria debe tener 4 digitos.");
+                }else {
+                    System.out.println("Transacción finalizada.");
+                    datos = makeRegister(new_user, new_name, new_password, datos);
+                }
                 break;
 
             case 3:
                 System.out.println("Programa finalizado.");
+                bandera = false;
                 break;
-        }
                 
+            default:
+                System.out.println("No se reococe la entrada.");
+        }
         guardarDatos(datos);
+    }        
     }
 
 	public static void menu() {
@@ -108,12 +116,22 @@ public class Main {
 	}
 
 	public static boolean validateUserId(String datos[][], String user_id) {            
-            for (int fila = 0; fila < 5; fila++) {
-                if (datos[fila][1].equals(user_id)) 
-                    return true;
+            
+            
+            
+            for (int fila = 0; fila < datos.length; fila++) {
+                if(datos[fila][1] == ""){
+                    if(datos[fila][1] == user_id){
+                        return true;
+                    }
+                }else{
+                    if(datos[fila][1].equals(user_id)){
+                        return true;
+                    }
+                }
             }
             return false;    
-	}
+        }
 
         public static int posicion(String datos[][], String user_id){
             int fila = 0;
