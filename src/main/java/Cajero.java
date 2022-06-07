@@ -14,8 +14,11 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.Random;
 
-public class Main {
+public class Cajero {
     public static void main(String[] args) {
+        //Ventana v1 = new Ventana();
+        //v1.setVisible(true);
+        
         crearArchivo();
 
         String[][] datos = new String[5][4];
@@ -143,151 +146,190 @@ public class Main {
         }
         guardarDatos(datos);
     }        
+}
+    /** 
+    * funcion para mostrar el menu principal
+    */
+    public static void menu() {
+        System.out.println("\nBIENVENIDO A ATM BANK");
+        System.out.println("1.Ingresar");
+        System.out.println("2.Registrarse");
+        System.out.println("3.Salir");
+
     }
-
-	public static void menu() {
-            System.out.println("\nBIENVENIDO A ATM BANK");
-            System.out.println("1.Ingresar");
-            System.out.println("2.Registrarse");
-            System.out.println("3.Salir");
-
-	}
-
-	public static boolean validateUserId(String datos[][], String user_id) {            
-            for (int fila = 0; fila < datos.length; fila++) {
-                if(datos[fila][1] == ""){
-                    if(datos[fila][1] == user_id){
-                        return true;
-                    }
-                }else{
-                    if(datos[fila][1].equals(user_id)){
-                        return true;
-                    }
-                }
-            }
-            return false;    
-        }
-
-        public static int posicion(String datos[][], String user_id){
-            int fila = 0;
-            
-            for (int i = 0; i < 5; i++) {
-                if (datos[i][1].equals(user_id))
-                    return i;
-            }
-            return -1;
-        }
-
-	public static boolean validatePassword(String datos[][], String password) {
-		for (int fila = 0; fila < 5; fila++) {
-                if (datos[fila][2].equals(password))
+    /**
+    * esta funcion valida usuario 
+    * @param datos
+    * @param user_id
+    * @return boolean
+    */
+    public static boolean validateUserId(String datos[][], String user_id) {            
+        for (int fila = 0; fila < datos.length; fila++) {
+            if(datos[fila][1] == ""){
+                if(datos[fila][1] == user_id){
                     return true;
+                }
+            }else{
+                if(datos[fila][1].equals(user_id)){
+                    return true;
+                }
             }
-            return false;
-	}
+        }
+        return false;    
+    }
+    /**
+    * extrae la posicion en donde se encuentran los datos
+    * @param datos
+    * @param user_id
+    * @return int
+    */
+    public static int posicion(String datos[][], String user_id){
+        int fila = 0;
 
-	public static String[][] makeRegister(String new_user, String new_name, String new_password, String [][] datos ) {
-            
+        for (int i = 0; i < 5; i++) {
+            if (datos[i][1].equals(user_id))
+                return i;
+        }
+        return -1;
+    }
+    /**
+    * recibe la contraseña y valida que sea la misma del user_id
+    * @param password
+    * @param datos
+    * @return boolean
+    */
+    public static boolean validatePassword(String datos[][], String password) {
             for (int fila = 0; fila < 5; fila++) {
-                if ("null".equals(datos[fila][0])){
-                    datos[fila][0] = new_name;
-                    datos[fila][1] = new_user;
-                    datos[fila][2] = new_password;
-                    datos[fila][3] = "0";
-                    System.out.println("Se añadio CORRECTAMENTE el usuario al registro del banco.");
-                    
-                    fila = 5;
-                }
+            if (datos[fila][2].equals(password))
+                return true;
+        }
+        return false;
+    }
+    /**
+    * recibe datos y los almacena en la matriz
+    * @param new_user
+    * @param new_name
+    * @param new_password
+    * @param datos
+    * @return datos
+    */
+    public static String[][] makeRegister(String new_user, String new_name, String new_password, String [][] datos ) {
+
+        for (int fila = 0; fila < 5; fila++) {
+            if ("null".equals(datos[fila][0])){
+                datos[fila][0] = new_name;
+                datos[fila][1] = new_user;
+                datos[fila][2] = new_password;
+                datos[fila][3] = "0";
+                System.out.println("Se añadio CORRECTAMENTE el usuario al registro del banco.");
+
+                fila = 5;
             }
-        
-	return datos;
-	}
-
-	public static boolean crearArchivo() {
-            boolean bandera = false;
-            try {
-                    File file = new File("datos.txt");
-                    if (!file.exists()) {
-                            file.createNewFile();
-                            bandera = true;
-                    }
-            } catch (IOException e) {
-                    e.printStackTrace();
-                    return bandera;
-            }
-            return bandera;
-
-	}
-
-	public static boolean guardarDatos(String[][] datos) {
-            boolean bandera = true;
-
-            FileWriter fichero = null;
-            PrintWriter pw = null;
-            try {
-                fichero = new FileWriter("datos.txt");
-                pw = new PrintWriter(fichero);
-                String cadena = "";
-                for (int fila = 0; fila < datos.length; fila++) {
-                        cadena = datos[fila][0] + "," + datos[fila][1] + "," + datos[fila][2] + ","+ datos[fila][3] + "\n";
-                        pw.print(cadena);
+        }
+    return datos;
+    }
+    /** 
+    * crea el documento de texto para almacenar los datos
+    * @return bandera
+    */
+    public static boolean crearArchivo() {
+        boolean bandera = false;
+        try {
+                File file = new File("datos.txt");
+                if (!file.exists()) {
+                        file.createNewFile();
+                        bandera = true;
                 }
-                bandera = true;
-            } catch (Exception e) {
-                    e.printStackTrace();
-            } finally {
-                    try {
-                        if (null != fichero)
-                            fichero.close();
-                    } catch (Exception a) {
-                        a.printStackTrace();
-                    }
-            }
-            return bandera;
-	}
-
-	public static String[][] cargarDatos() {
-            File archivo = null;
-            FileReader fr = null;
-            BufferedReader br = null;
-            String datos[][] = new String[5][4];
-
-            try {
-                archivo = new File("datos.txt");
-                fr = new FileReader(archivo);
-                br = new BufferedReader(fr);
-
-                String linea = "";
-                String separador = Pattern.quote(",");
-
-                int i = 0;
-                while ((linea = br.readLine()) != null) {
-                        String lineaDividida[] = linea.split(separador);
-                        datos[i][0] = lineaDividida[0];
-                        datos[i][1] = lineaDividida[1];
-                        datos[i][2] = lineaDividida[2];
-                        datos[i][3] = lineaDividida[3];
-                        i++;
-                }
-            } catch (Exception e) {
+        } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                        if (null != fr)
-                                fr.close();
-                } catch (Exception e2) {
-                        e2.printStackTrace();
-                }
+                return bandera;
+        }
+        return bandera;
+
+    }
+    /**
+    * guarda los datos de la matriz al archivo de texto
+    * @param datos
+    * @return bandera
+    */
+    public static boolean guardarDatos(String[][] datos) {
+        boolean bandera = true;
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("datos.txt");
+            pw = new PrintWriter(fichero);
+            String cadena = "";
+            for (int fila = 0; fila < datos.length; fila++) {
+                    cadena = datos[fila][0] + "," + datos[fila][1] + "," + datos[fila][2] + ","+ datos[fila][3] + "\n";
+                    pw.print(cadena);
             }
-        return datos;
-	}
-        
+            bandera = true;
+        } catch (Exception e) {
+                e.printStackTrace();
+        } finally {
+                try {
+                    if (null != fichero)
+                        fichero.close();
+                } catch (Exception a) {
+                    a.printStackTrace();
+                }
+        }
+        return bandera;
+    }
+    /**
+    * para cargar los datos que estan en el archivo de texto a la matriz
+    * @return datos
+    */
+    public static String[][] cargarDatos() {
+        File archivo = null;
+        FileReader fr = null;
+        BufferedReader br = null;
+        String datos[][] = new String[5][4];
+
+        try {
+            archivo = new File("datos.txt");
+            fr = new FileReader(archivo);
+            br = new BufferedReader(fr);
+
+            String linea = "";
+            String separador = Pattern.quote(",");
+
+            int i = 0;
+            while ((linea = br.readLine()) != null) {
+                    String lineaDividida[] = linea.split(separador);
+                    datos[i][0] = lineaDividida[0];
+                    datos[i][1] = lineaDividida[1];
+                    datos[i][2] = lineaDividida[2];
+                    datos[i][3] = lineaDividida[3];
+                    i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                    if (null != fr)
+                            fr.close();
+            } catch (Exception e2) {
+                    e2.printStackTrace();
+            }
+        }
+    return datos;
+    }
+    /**
+    * muestra el menu del cajero   
+    */   
     public static void menuCajero(){
         System.out.println("1. Consultar saldo.");
         System.out.println("2. Retirar dinero.");
         System.out.println("3. Consignar dinero.");
     }
-
+    /**
+    * llena el cajero aleatoriamente con una cantidad de billetes
+    * @param v
+    * @return v
+    */
     public static int[] llenarCajero(int [] v) {
         Random aleatorio = new Random();
         for (int i = 0; i < v.length; i++) {
@@ -299,7 +341,14 @@ public class Main {
         }
         return v;
     }
-
+    /**
+    * calcular la cantidad de billetes a dar de acuerdo a la cantidad que se va a retirar
+    * @param billetesCajero
+    * @param cantidadRetirar
+    * @param datos
+    * @param posicion
+    * @return boolean
+    */
     public static boolean retirarDinero(int[] billetesCajero, int cantidadRetirar, String[][] datos, int posicion) {
         int saldoActual = Integer.parseInt (datos[posicion][3]);
         int [] dineroRetirado= new int[4];
@@ -307,38 +356,37 @@ public class Main {
             return false;
         }else{
             while (cantidadRetirar > 0){
-                if(cantidadRetirar >= 100){
+                if(cantidadRetirar >= 100000){
                     if(billetesCajero[3] > 0){
                         dineroRetirado[3] += 1;
                         billetesCajero[3] -=1;
-                        cantidadRetirar -= 100;
+                        cantidadRetirar -= 100000;
                     }else{
                         System.out.println("NO HAY BILLETES DE $100.");
                         dineroRetirado[2] += 2;
                         billetesCajero[2] -=2;
-                        cantidadRetirar -= 100;
+                        cantidadRetirar -= 100000;
                     }
                 }else{
-                    if (cantidadRetirar >= 50){
-                        
+                    if (cantidadRetirar > 50000){
                         if(billetesCajero[2] > 0){
                             dineroRetirado[2] += 1;
                             billetesCajero[2] -=1;
-                            cantidadRetirar -= 50;
+                            cantidadRetirar -= 50000;
                         }else {
                             dineroRetirado[1] += 2;
                             dineroRetirado[0] += 1;
                             billetesCajero[1] -= 2;
                             billetesCajero[0] -= 1;
-                            cantidadRetirar -= 50;
+                            cantidadRetirar -= 50000;
                         }
                         
                     }else{
-                        if (cantidadRetirar >= 20){
+                        if (cantidadRetirar >= 20000){
                             if(billetesCajero[1] > 0){
                                 dineroRetirado[1] += 1;
                                 billetesCajero[1] -=1;
-                                cantidadRetirar -= 20;
+                                cantidadRetirar -= 20000;
                             }else{
                                 dineroRetirado[0] +=2;
                                 billetesCajero[0] -=2;
@@ -348,7 +396,7 @@ public class Main {
                             if(billetesCajero[0] > 0){
                                 dineroRetirado[0] += 1;
                                 billetesCajero[0] -=1;
-                                cantidadRetirar -= 100;
+                                cantidadRetirar -= 10000;
                             } else{
                                 System.out.println("No hay billetes de $10, retire cantidad en multiplo de $20");
                             }
