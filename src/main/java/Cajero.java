@@ -28,6 +28,15 @@ public class Cajero {
         
         
         datos = cargarDatos();
+        for (int i = 0; i < datos.length; i++) {
+            for (int j = 0; j < datos[i].length; j++) {
+                if (datos[i][j] == ""){
+                    datos[i][j] = null;
+                }
+            }
+        }
+                
+                
         Scanner teclado = new Scanner(System.in);
         String user_id, password, new_user, new_password, new_name;
         boolean bandera = true;
@@ -81,12 +90,7 @@ public class Cajero {
                                     System.out.println("RETIRO DE DINERO");
                                     System.out.println("Ingrese la cantidad que desea retirar: $");
                                     int cantidadRetirar = teclado.nextInt();
-                                    if (retirarDinero(billetesCajero, cantidadRetirar, datos, fila) == false){
-                                        System.out.println("=======================================================");
-                                        System.out.println("No tiene saldo suficiente");
-                                        System.out.println("Transacción finalizada. Vuelva pronto...");                                        
-                                        System.out.println("=======================================================");
-                                    }else{
+                                    if (!retirarDinero(billetesCajero, cantidadRetirar, datos, fila) == false){
                                         int saldoActual = Integer.parseInt (datos[fila][3]);
                                         saldoActual -= cantidadRetirar;
                                         String saldoFinal = String.valueOf(saldoActual);
@@ -97,7 +101,7 @@ public class Cajero {
                                         System.out.println("El saldo actual de la cuenta es de: $"+datos[fila][3]);
                                         System.out.println("Transacción finalizada. Vuelva pronto...");
                                         System.out.println("=======================================================");
-                                    };
+                                    }
                                     break;
                                 case 3:
                                     System.out.println("CONSIGNACION DE DINERO");
@@ -133,6 +137,7 @@ public class Cajero {
                 }else {
                     System.out.println("Transacción finalizada.");
                     datos = makeRegister(new_user, new_name, new_password, datos);
+                    
                 }
                 break;
 
@@ -165,14 +170,8 @@ public class Cajero {
     */
     public static boolean validateUserId(String datos[][], String user_id) {            
         for (int fila = 0; fila < datos.length; fila++) {
-            if(datos[fila][1] == ""){
-                if(datos[fila][1] == user_id){
-                    return true;
-                }
-            }else{
-                if(datos[fila][1].equals(user_id)){
-                    return true;
-                }
+            if(datos[fila][1].equals(user_id)){
+                return true;
             }
         }
         return false;    
@@ -216,13 +215,14 @@ public class Cajero {
     public static String[][] makeRegister(String new_user, String new_name, String new_password, String [][] datos ) {
 
         for (int fila = 0; fila < 5; fila++) {
-            if ("null".equals(datos[fila][0])){
+            if ((datos[fila][0]).equals("null")){
                 datos[fila][0] = new_name;
                 datos[fila][1] = new_user;
                 datos[fila][2] = new_password;
                 datos[fila][3] = "0";
+                System.out.println("=======================================================");
                 System.out.println("Se añadio CORRECTAMENTE el usuario al registro del banco.");
-
+                System.out.println("=======================================================");
                 fila = 5;
             }
         }
@@ -235,14 +235,14 @@ public class Cajero {
     public static boolean crearArchivo() {
         boolean bandera = false;
         try {
-                File file = new File("datos.txt");
-                if (!file.exists()) {
-                        file.createNewFile();
-                        bandera = true;
+            File file = new File("datos.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+                bandera = true;
                 }
         } catch (IOException e) {
-                e.printStackTrace();
-                return bandera;
+            e.printStackTrace();
+            return bandera;
         }
         return bandera;
 
@@ -262,8 +262,8 @@ public class Cajero {
             pw = new PrintWriter(fichero);
             String cadena = "";
             for (int fila = 0; fila < datos.length; fila++) {
-                    cadena = datos[fila][0] + "," + datos[fila][1] + "," + datos[fila][2] + ","+ datos[fila][3] + "\n";
-                    pw.print(cadena);
+                cadena = datos[fila][0] + "," + datos[fila][1] + "," + datos[fila][2] + ","+ datos[fila][3] + "\n";
+                pw.print(cadena);
             }
             bandera = true;
         } catch (Exception e) {
@@ -351,57 +351,123 @@ public class Cajero {
     */
     public static boolean retirarDinero(int[] billetesCajero, int cantidadRetirar, String[][] datos, int posicion) {
         int saldoActual = Integer.parseInt (datos[posicion][3]);
+        int dineroTotalCajero = 0;
+        dineroTotalCajero += billetesCajero[0]*10000;
+        dineroTotalCajero += billetesCajero[1]*20000;
+        dineroTotalCajero += billetesCajero[2]*50000;
+        dineroTotalCajero += billetesCajero[3]*100000;
+        
+        //System.out.println("=======================================================");
+        //System.out.println(dineroTotalCajero);
+        //System.out.println("=======================================================");
         int [] dineroRetirado= new int[4];
+
         if (saldoActual < cantidadRetirar){
+            System.out.println("=======================================================");
+            System.out.println("No tiene saldo suficiente");
+            System.out.println("Transacción finalizada. Vuelva pronto...");                                        
+            System.out.println("=======================================================");
             return false;
         }else{
             while (cantidadRetirar > 0){
-                if(cantidadRetirar >= 100000){
-                    if(billetesCajero[3] > 0){
-                        dineroRetirado[3] += 1;
-                        billetesCajero[3] -=1;
-                        cantidadRetirar -= 100000;
-                    }else{
-                        System.out.println("NO HAY BILLETES DE $100.");
-                        dineroRetirado[2] += 2;
-                        billetesCajero[2] -=2;
-                        cantidadRetirar -= 100000;
-                    }
+                if (billetesCajero[0] < 0 && billetesCajero[1] < 0 && billetesCajero[2] < 0 && billetesCajero[3] < 0){
+                    System.out.println("=======================================================");
+                    System.out.println("EL CAJERO SE QUEDO SIN DINERO, VUELBA MÁS TARDE");
+                    System.out.println("=======================================================");
                 }else{
-                    if (cantidadRetirar > 50000){
-                        if(billetesCajero[2] > 0){
-                            dineroRetirado[2] += 1;
-                            billetesCajero[2] -=1;
-                            cantidadRetirar -= 50000;
-                        }else {
-                            dineroRetirado[1] += 2;
-                            dineroRetirado[0] += 1;
-                            billetesCajero[1] -= 2;
-                            billetesCajero[0] -= 1;
-                            cantidadRetirar -= 50000;
-                        }
-                        
-                    }else{
-                        if (cantidadRetirar >= 20000){
-                            if(billetesCajero[1] > 0){
-                                dineroRetirado[1] += 1;
-                                billetesCajero[1] -=1;
-                                cantidadRetirar -= 20000;
+                    if (cantidadRetirar > dineroTotalCajero){
+                        System.out.println("=======================================================");
+                        System.out.println("EL CAJERO NO TIENE ESE MONTO DE DINERO, PRUEBA CON UN MONTO MAS PEQUEÑO");
+                        System.out.println("=======================================================");
+                        return false;
+                    }else {
+                    
+                        if(cantidadRetirar > 100000){
+                            if(billetesCajero[3] > 0){
+                                dineroRetirado[3] += 1;
+                                billetesCajero[3] -=1;
+                                cantidadRetirar -= 100000;
                             }else{
-                                dineroRetirado[0] +=2;
-                                billetesCajero[0] -=2;
-                                cantidadRetirar-=20;
+                                System.out.println("NO HAY BILLETES DE $100.");
+                                if(billetesCajero[2] > 0){
+                                    dineroRetirado[2] += 2;
+                                    billetesCajero[2] -=2;
+                                    cantidadRetirar -= 100000;
+                                }else{
+                                    System.out.println("No hay billetes de 50 mil.");
+                                    return false;
+                                }
                             }
                         }else{
-                            if(billetesCajero[0] > 0){
-                                dineroRetirado[0] += 1;
-                                billetesCajero[0] -=1;
-                                cantidadRetirar -= 10000;
-                            } else{
-                                System.out.println("No hay billetes de $10, retire cantidad en multiplo de $20");
+                            if (cantidadRetirar > 50000){
+                                if(billetesCajero[2] > 0){
+                                    dineroRetirado[2] += 1;
+                                    billetesCajero[2] -=1;
+                                    cantidadRetirar -= 50000;
+                                }else {
+                                    dineroRetirado[1] += 2;
+                                    dineroRetirado[0] += 1;
+                                    billetesCajero[1] -= 2;
+                                    billetesCajero[0] -= 1;
+                                    cantidadRetirar -= 50000;
+                                }
+
+                            }else{
+                                if (cantidadRetirar > 20000){
+                                    if(billetesCajero[1] > 0){
+                                        dineroRetirado[1] += 1;
+                                        billetesCajero[1] -=1;
+                                        cantidadRetirar -= 20000;
+                                    }else{
+                                        System.out.println("No hay billetes de $20, retire cantidad en multiplo de $10");
+                                        dineroRetirado[0] +=2;
+                                        billetesCajero[0] -=2;
+                                        cantidadRetirar-=20;
+                                        
+                                    }
+                                }else{
+                                    if(billetesCajero[0] > 0){
+                                        dineroRetirado[0] += 1;
+                                        billetesCajero[0] -=1;
+                                        cantidadRetirar -= 10000;
+                                    } else{
+                                        System.out.println("No hay billetes de $10, retire cantidad en multiplo de $20");
+                                        return false;
+                                    }
+                                }
                             }
                         }
                     }
+                }
+            }
+                
+            if (billetesCajero[3] < billetesCajero[2]){
+                while(dineroRetirado[3] > dineroRetirado[2]){
+                    dineroRetirado[2] +=2;
+                    dineroRetirado[3] -=1;
+                    
+                    billetesCajero[2] -= 2;
+                    billetesCajero[3] += 1;
+                }
+            }
+            if (billetesCajero[2] < billetesCajero[1] ){
+                while(dineroRetirado[2] > dineroRetirado[1]){
+                    dineroRetirado[1] +=2;
+                    dineroRetirado[0] +=1;
+                    dineroRetirado[2] -=1;
+                    
+                    billetesCajero[1] -=2;
+                    billetesCajero[0] -=1;
+                    billetesCajero[2] +=1;
+                }
+            }
+            if (billetesCajero[1] < billetesCajero[0] ){
+                while(dineroRetirado[1] > dineroRetirado[0]){
+                    dineroRetirado[0] +=2;
+                    dineroRetirado[1] -=1;
+                    
+                    billetesCajero[0] -=2;
+                    billetesCajero[1] +=1;
                 }
             }
         }
