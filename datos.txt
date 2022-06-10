@@ -1,5 +1,0 @@
-carlos,1004827192,1234,0
-harold,41922275,1234,0
-null,null,null,null
-null,null,null,null
-null,null,null,null
